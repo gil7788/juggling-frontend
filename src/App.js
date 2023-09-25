@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import GeneratorGui from "./components/GeneratorGui.tsx";
+import { PatternSelection } from "./components/PatternSelection.tsx";
+import JugglingPatternsList from "./components/JugglingPatternsList.tsx"
+import { useAppContext } from "./components/AppContext.tsx";
+
 
 function App() {
+  const {
+    showJugglingPatterns,
+    setShowJugglingPatterns,
+    patterns,
+    setPatterns,
+    patternLength,
+    setPatternLength,
+    numberOfBalls,
+    setNumberOfBalls,
+    handleGenerate,
+  } = useAppContext();
+
+  useEffect(() => {
+    // Load patterns when the component mounts (you can modify this behavior)
+    handleGenerate();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Your App</h1>
+      <GeneratorGui
+        setPatternLength={setPatternLength}
+        setNumberOfBalls={setNumberOfBalls}
+      />
+      {/* <PatternSelection />
+      {showJugglingPatterns && <JugglingPatternsList patterns={patterns} />} */}
     </div>
   );
 }
