@@ -18,7 +18,6 @@ const Pattern: React.FC<PatternProps> = ({ searchedPattern }) => {
   const title = searchedPattern ? `Select pattern ${searchedPattern}` : "Pattern";
 
   const handleListItemClick = (item: ListItem) => {
-    // Handle item click here
     console.log(`Item clicked: ${item.text}`);
   };
 
@@ -29,16 +28,16 @@ const Pattern: React.FC<PatternProps> = ({ searchedPattern }) => {
             <div className="container mx-auto py-6">
               <h1 className="text-gray-800 text-2xl font-bold mt-2 ml-6">{title}</h1>
               <div className="grid grid-cols-5 gap-4 h-full">
-                <div className="col-span-3 flex items-center rounded-lg bg-white shadow-lg overflow-hidden">
-                  <div>
-                    <Animation />
-                  </div>
-                </div>
                 <div className="col-span-1 flex bg-brand-light items-center rounded-lg  shadow-lg overflow-hidden">
                   <List title="List 1" items={list1} onItemClick={handleListItemClick}/>
                 </div>
                 <div className="col-span-1 flex bg-brand-light items-center rounded-lg bg-white shadow-lg overflow-hidden">
                   <List title="List 2" items={list2} onItemClick={handleListItemClick}/>
+                </div>
+                <div className="col-span-3 flex items-center rounded-lg bg-white shadow-lg overflow-hidden">
+                  <div>
+                    <Animation />
+                  </div>
                 </div>
               </div>
             </div>
