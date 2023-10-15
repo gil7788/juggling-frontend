@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 import DestinationCards from "./components/DestinationCards";
 import Hero from "./components/Hero";
 
-import GeneratorGui from "./components/GeneratorGui";
+import Generate from "./components/Generate";
 
 export default function App() {
   const [searchedPattern, setSearchedPattern] = useState("");
@@ -31,7 +31,7 @@ export default function App() {
             <About />
           </div>
           <div id="generator">
-            <GeneratorGui patternLength={"Pattern Length"} numberOfBalls={"Number of Balls"} />
+            <Generate patternLength={"Pattern Length"} numberOfBalls={"Number of Balls"} />
           </div>
         </div>
         <Footer />

@@ -1,6 +1,6 @@
 import Input from "./Input";
 
-interface FormFactoryProps {
+interface GeneratorFormProps {
   patternLengthLabel: string;
   numberOfBallsLabel: string;
   patternLengthValue: string;
@@ -10,7 +10,7 @@ interface FormFactoryProps {
   onGenerate: () => void;
 }
 
-export default function FormFactory(props: FormFactoryProps) {
+export default function GeneratorForm(props: GeneratorFormProps) {
   const {
     patternLengthLabel,
     numberOfBallsLabel,

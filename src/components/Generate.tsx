@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import FormFactory from "./FormFactory";
+import GeneratorForm from "./GeneratorForm";
 
-interface GeneratorGuiProps {
+interface GenerateProps {
   patternLength: string;
   numberOfBalls: string;
 }
 
-export default function GeneratorGui(props: GeneratorGuiProps) {
+export default function Generate(props: GenerateProps) {
   const { patternLength, numberOfBalls } = props;
   const [patternLengthValue, setPatternLengthValue] = useState("");
   const [numberOfBallsValue, setNumberOfBallsValue] = useState("");
@@ -26,7 +26,7 @@ export default function GeneratorGui(props: GeneratorGuiProps) {
       <div className="form-group px-8 py-6 items-center rounded-lg bg-white shadow-lg overflow-hidden">
       <h1 className="text-2xl font-bold text-gray-800 mt-2 ml-6">Generate</h1>
 
-        <FormFactory
+        <GeneratorForm
           patternLengthLabel={patternLength}
           numberOfBallsLabel={numberOfBalls}
           patternLengthValue={patternLengthValue}
