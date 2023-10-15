@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import FormFactory from "./FormFactory.tsx";
-import Fetch from "./Fetch.tsx";
+import FormFactory from "./FormFactory";
+// import Fetch from "./Fetch";
 
 interface GeneratorGuiProps {
   patternLength: string;
@@ -36,16 +36,16 @@ export default function GeneratorGui(props: GeneratorGuiProps) {
       <h2>patternLengthValue: {patternLengthValue}</h2>
       <h2>numberOfBallsValue: {numberOfBallsValue}</h2>
       <p>URL: {apiUrl}</p>
-      {apiUrl && (
+      {/* {apiUrl && (
         <Fetch
           url={apiUrl}
-          renderSuccess={(data) => {console.log("data:", data); return <pre>{JSON.stringify(data, null, 2)}</pre>}}
+          renderSuccess={(data: any) => {console.log("data:", data); return <pre>{JSON.stringify(data, null, 2)}</pre>}}
           renderLoading={() => <h1>Loading...</h1>}
           renderError={(error) => (
             <pre>Error!{JSON.stringify(error, null, 2)}</pre>
           )}
         />
-      )}
+      )} */}
     </>
   );
 }
