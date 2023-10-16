@@ -35,9 +35,10 @@ const Pattern: React.FC<PatternProps> = ({ searchedPattern }) => {
                   <List title="List 2" items={list2} onItemClick={handleListItemClick}/>
                 </div>
                 <div className="col-span-3 flex items-center rounded-lg bg-white shadow-lg overflow-hidden">
-                  <div>
-                    <Animation />
-                  </div>
+                <div className="w-full h-screen flex items-center justify-center">
+                  <Animation />
+                </div>
+
                 </div>
               </div>
             </div>

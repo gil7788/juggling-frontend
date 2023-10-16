@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 
-const ThreeScene: React.FC = () => {
+const ModelViewer: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -10,11 +11,11 @@ const ThreeScene: React.FC = () => {
     const renderer = new THREE.WebGLRenderer();
 
     if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        renderer.setSize(rect.width, rect.height);
-        containerRef.current.appendChild(renderer.domElement);
-      }
-  
+      const rect = containerRef.current.getBoundingClientRect();
+      renderer.setSize(rect.width, rect.height);
+      containerRef.current.appendChild(renderer.domElement);
+    }
+
     const ambientLight = new THREE.AmbientLight(0x404040);
     scene.add(ambientLight);
 
@@ -22,19 +23,24 @@ const ThreeScene: React.FC = () => {
     directionalLight.position.set(1, 1, 1);
     scene.add(directionalLight);
 
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
+    const loader = new FBXLoader();
 
-    scene.add(cube);
+    loader.load('Jog Forward.fbx', (fbx) => {
+      const object = fbx;
+      scene.add(object);
 
-    camera.position.z = 5;
+      object.scale.set(0.01, 0.01, 0.01);
+      object.position.set(0, 0, 0); 
+      object.rotation.x = 0;
+    }, undefined, (error) => {
+      console.error(error);
+    });
 
+    camera.position.set(-1, 3, 3);
+    camera.lookAt(0, 0, 0);
+    
     const animate = () => {
       requestAnimationFrame(animate);
-
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
 
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.render(scene, camera);
@@ -46,4 +52,4 @@ const ThreeScene: React.FC = () => {
   return <div ref={containerRef}></div>;
 };
 
-export default ThreeScene;
+export default ModelViewer;

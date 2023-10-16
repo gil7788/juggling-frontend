@@ -4,7 +4,6 @@ import Pattern from "./components/Pattern";
 import NavigationBar from "./components/NavigationBar";
 import About from "./components/About";
 import Footer from "./components/Footer";
-import DestinationCards from "./components/DestinationCards";
 import Hero from "./components/Hero";
 
 import Generate from "./components/Generate";
