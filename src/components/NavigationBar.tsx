@@ -1,21 +1,17 @@
 import React from "react";
+import ResponsiveNavbar from "../ResponsiveNavbar";
+
 
 const NavigationBar: React.FC = () => {
-  const scrollToComponent = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+const navigation = [
+  { name: 'Dashboard', href: '#dashboard', current: true },
+  { name: 'Pattern', href: '#pattern', current: false },
+  { name: 'About', href: '#about', current: false },
+  { name: 'Generate', href: '#generator', current: false },
+];
 
   return (
-    <nav className="bg-gray-800 text-white p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <button onClick={() => scrollToComponent("hero")}>Home</button>
-        <button onClick={() => scrollToComponent("pattern")}>Pattern</button>
-        <button onClick={() => scrollToComponent("about")}>About</button>
-      </div>
-    </nav>
+    <ResponsiveNavbar navigation={navigation} />
   );
 };
 
