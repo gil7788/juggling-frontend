@@ -1,124 +1,75 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import Ball from './Ball';
 
-const right_hand_position = 1;
-const left_hand_position = -1;
-const max_height = 4;
+// Define time-related constants for better code clarity and to avoid magic numbers
+const MILLISECONDS_PER_SECOND = 1000;
+const BEATS_PER_SECOND = 3; // Defines the juggling tempo, can be adjusted as needed
 
-class Ball {
-  constructor(scene, startPosition) {
-    this.geometry = new THREE.SphereGeometry(0.1, 32, 32);
-    this.material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.mesh.position.x = startPosition;
-    scene.add(this.mesh);
-
-    this.time = -1;
-    this.gravity = -9.8;
-    this.startPosition = startPosition;
-    this.endPosition = startPosition === right_hand_position ? left_hand_position : right_hand_position;
-    this.velocity = Math.sqrt(-2 * this.gravity * max_height);
-    this.isThrown = false;
-  }
-
-  throw() {
-    this.time = 0;
-    this.isThrown = true;
-  }
-
-  update(dt) {
-    if (!this.isThrown) return;
-
-    this.time += dt;
-
-    const newY = this.velocity * this.time + 0.5 * this.gravity * this.time * this.time;
-    if (newY < 0) {
-      // Ball has reached the other hand, stop it.
-      this.isThrown = false;
-      this.mesh.position.y = 0;
-      this.mesh.position.x = this.endPosition;
-      return;
+class Pattern {
+  constructor(pattern, scene, rightHandPosition, leftHandPosition) {
+    if (!this.isValidPattern(pattern)) {
+      throw new Error('Invalid pattern. Pattern might contain NaN, or average of the pattern is not an integer.');
     }
-    
-    this.mesh.position.y = newY;
-    this.mesh.position.x = THREE.MathUtils.lerp(this.startPosition, this.endPosition, this.time / (2 * this.velocity / Math.abs(this.gravity)));
+    this.pattern = pattern;
+    this.scene = scene;
+    this.currentHand = rightHandPosition;
+    this.rightHandPosition = rightHandPosition;
+    this.leftHandPosition = leftHandPosition;
+    this.balls = [];
+    this.ballQueue = [];
+    this.currentTime = Date.now();
+    this.deltaTime = 0;
+    this.animate = this.animate.bind(this); // Bind this to the class instance
   }
 
-  togglePosition() {
-    this.isThrown = false;
-    this.time = 0;
-    
-    // Swap start and end positions
-    const temp = this.startPosition;
-    this.startPosition = this.endPosition;
-    this.endPosition = temp;
+  isValidPattern(pattern) {
+    const average = this.getNumberOfBalls(pattern);
+    return Number.isInteger(average);
+  }
 
-    this.mesh.position.x = this.startPosition;
-    this.mesh.position.y = 0;
-}
+  getNumberOfBalls(pattern) {
+    const patternArray = pattern.split('').map(Number);
+    const sum = patternArray.reduce((acc, val) => acc + val, 0);
+    return sum / patternArray.length;
+  }
+
+  initialize() {
+    const numberOfBalls = this.getNumberOfBalls(this.pattern);
+    for (let i = 0; i < numberOfBalls; i++) {
+      const ball = new Ball(this.scene, this.getNextSourcePosition(), i, this.currentTime + MILLISECONDS_PER_SECOND * i);
+      this.balls.push(ball);
+    }
+    requestAnimationFrame(this.animate); 
+  }
+
+  setNextThrowTime(ball, beatsUntilNextThrow) {
+    const deltaTime = beatsUntilNextThrow * (MILLISECONDS_PER_SECOND / BEATS_PER_SECOND);
+    ball.nextThrowTime = this.currentTime + deltaTime;
+  }
+  
+  animate() {
+    requestAnimationFrame(this.animate);
+
+    const newTime = Date.now();
+    this.deltaTime = (newTime - this.currentTime) / MILLISECONDS_PER_SECOND; // Convert deltaTime to seconds
+    this.currentTime = newTime;
+
+    for (let ball of this.balls) {
+      if (this.currentTime >= ball.nextThrowTime && !ball.isThrown) {
+        ball.throw();
+        this.setNextThrowTime(ball, this.pattern[ball.throwIndex % this.pattern.length]);
+        ball.throwIndex++;
+      }
+      if (ball.update(this.deltaTime)) {
+        this.setNextThrowTime(ball, this.pattern[ball.throwIndex % this.pattern.length]);
+        ball.throwIndex++;
+      }
+    }
+  }
+
+  getNextSourcePosition() {
+    this.currentHand = this.currentHand === this.rightHandPosition ? this.leftHandPosition : this.rightHandPosition;
+    return this.currentHand;
+  }
 }
 
-const BouncingBalls = () => {
-    const mountRef = useRef(null);
-  
-    useEffect(() => {
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.z = 6;
-      camera.position.y = 2;
-      camera.position.x = 2;
-  
-      const renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      mountRef.current.appendChild(renderer.domElement);
-  
-      const balls = [
-        new Ball(scene, right_hand_position),
-        new Ball(scene, left_hand_position),
-        new Ball(scene, right_hand_position)
-      ];
-  
-      // Initialize the ball queue with balls
-      const ballQueue = [...balls];
-  
-      let lastTime = Date.now();
-  
-      const animate = () => {
-        requestAnimationFrame(animate);
-  
-        let currentTime = Date.now();
-        let deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
-        lastTime = currentTime;
-  
-        for (let ball of balls) {
-          ball.update(deltaTime);
-        }
-  
-        let currentBall = ballQueue[0]; // Peek the first ball from the queue
-        
-        // Calculate the time at which the ball is at mid-air based on the motion equation
-        let timeAtMidAir = currentBall.velocity / Math.abs(currentBall.gravity);
-  
-        if (!currentBall.isThrown) {
-          // Current ball has landed
-          ballQueue.shift(); // Dequeue
-          currentBall.togglePosition();
-          ballQueue.push(currentBall); // Enqueue at the end
-        } else if (currentBall.time >= timeAtMidAir && !ballQueue[1].isThrown) {
-          // The next ball should be thrown when the current ball reaches mid-air
-          ballQueue[1].throw();
-        }
-  
-        renderer.render(scene, camera);
-      };
-      
-      ballQueue[0].throw(); // Start by throwing the first ball in the queue
-      animate();
-  
-      return () => {};
-    }, []);
-  
-    return <div ref={mountRef} className="h-screen w-full" />;
-  };
-  
-  export default BouncingBalls;
+export { Pattern };

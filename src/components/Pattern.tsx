@@ -1,5 +1,5 @@
 import React from "react";
-import Animation from "./animation/Animation";
+import Animation from "./animation/Animation.jsx";
 import list1 from "../mock/list1";
 import list2 from "../mock/list2";
 import List from "./Utilities/List";

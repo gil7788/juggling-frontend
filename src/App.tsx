@@ -5,7 +5,7 @@ import NavigationBar from "./components/NavigationBar";
 import About from "./components/About";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
-import BouncingBall from "./components/animation/BouncingBall";
+import Animation from "./components/animation/Animation.jsx";
 
 import Generate from "./components/Generate";
 
@@ -30,7 +30,7 @@ export default function App() {
           <div id="tests">
             <div className="max-w-md sm:max-w-xl lg:max-w-6xl mx-auto px-8 lg:px-12 py-8">
               <div className="px-8 py-6 items-center rounded-lg bg-white shadow-lg overflow-hidden h-full w-full">
-                <BouncingBall />
+                <Animation />
               </div>
             </div>
           </div>
